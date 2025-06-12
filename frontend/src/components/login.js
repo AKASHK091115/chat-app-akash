@@ -62,7 +62,7 @@ export default function Login({ onLogin }) {
   return (
     <div style={styles.page}>
       <div style={styles.container}>
-        <h2 style={styles.title}>beta-chat</h2>
+        <h2 style={styles.title}>Beta-chat</h2>
         <p style={styles.subtitle}>Login to continue chatting</p>
         <form onSubmit={handleSubmit} style={styles.form} autoComplete="on">
           <input
@@ -111,7 +111,7 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    fontFamily: "'Poppins', sans-serif",
   },
   container: {
     width: "100%",
