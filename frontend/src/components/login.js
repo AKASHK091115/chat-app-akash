@@ -62,7 +62,7 @@ export default function Login({ onLogin }) {
   return (
     <div style={styles.page}>
       <div style={styles.container}>
-        <h2 style={styles.title}>Welcome Back 👋</h2>
+        <h2 style={styles.title}>beta-chat</h2>
         <p style={styles.subtitle}>Login to continue chatting</p>
         <form onSubmit={handleSubmit} style={styles.form} autoComplete="on">
           <input
