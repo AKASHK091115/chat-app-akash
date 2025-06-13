@@ -2,7 +2,9 @@ const express = require('express');
 const router = express.Router();
 const { Op } = require('sequelize'); // ✅ Fix: Import Op
 const Message = require('../models/message');
-
+const { markChatAsRead } = require('../controller/messageReadController');
+const auth = require('../middleware/authMiddleware'); // if you're using auth
+const { getUnreadCounts } = require('../controller/messageReadController');
 // 🔒 Fetch private messages between two users
 router.get('/private/:userId/:otherUserId', async (req, res) => {
   const { userId, otherUserId } = req.params;
@@ -41,5 +43,8 @@ router.get('/groups/:groupId', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+router.post('/:chatId/read', auth, markChatAsRead);
+
+router.get('/unread/counts', auth, getUnreadCounts);
 
 module.exports = router;
