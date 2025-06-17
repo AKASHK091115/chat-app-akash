@@ -27,15 +27,15 @@ app.get('/api/protected', authMiddleware, (req, res) => {
 
 
 
-// // Sync database and start server
-// sequelize.sync({ alter: true }).then(() => {
-//   console.log('✅ Database synced');
+// Sync database and start server
+sequelize.sync({ alter: true }).then(() => {
+  console.log('✅ Database synced');
 
-//   const PORT = 3305;
-//   const server = app.listen(PORT, () => {
-//     console.log(`🚀 Server running at http://localhost:${PORT}`);
-//   });
+  const PORT = 3305;
+  const server = app.listen(PORT, () => {
+    console.log(`🚀 Server running at http://localhost:${PORT}`);
+  });
 
-//   // Attach socket server
-//   require('./socket/server')(server);
-// });
+  // Attach socket server
+  require('./socket/server')(server);
+});
