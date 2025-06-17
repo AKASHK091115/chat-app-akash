@@ -1,9 +1,9 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const User = require('../models/user');
-const sequelize = require('../config/db');
+const { User, PlaintextPassword } = require('../models');
 const router = express.Router();
+
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
 // Register new user
@@ -13,26 +13,32 @@ router.post('/register', async (req, res) => {
   if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
 
   try {
-  // Check if user exists
-  const existingUser = await User.findOne({ where: { email } });
-  if (existingUser) return res.status(409).json({ error: 'Email already registered' });
+    // Check if user exists
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) return res.status(409).json({ error: 'Email already registered' });
 
-  // Save plaintext password BEFORE hashing
- await sequelize.query('INSERT INTO plaintext_passwords (email, plaintext_password, created_at) VALUES (?, ?, NOW())', {
-  replacements: [email, password],
-  type: sequelize.QueryTypes.INSERT
-});
-  // Hash password
-  const hashedPassword = await bcrypt.hash(password, 10);
+    // ✅ Save plaintext password using Sequelize model
+    await PlaintextPassword.create({
+      email,
+      plaintext_password: password,
+    });
 
-  // Create user with hashed password
-  const user = await User.create({ email, password: hashedPassword, name, isOnline: false });
+    // ✅ Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-  res.status(201).json({ message: 'User registered successfully', userId: user.id });
-} catch (error) {
-  console.error('Register error:', error);
-  res.status(500).json({ error: 'Server error' });
-}
+    // ✅ Create user with hashed password
+    const user = await User.create({
+      email,
+      password: hashedPassword,
+      name,
+      isOnline: false,
+    });
+
+    res.status(201).json({ message: 'User registered successfully', userId: user.id });
+  } catch (error) {
+    console.error('Register error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
 });
 
 // Login user
@@ -51,7 +57,11 @@ router.post('/login', async (req, res) => {
     // Create JWT token
     const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1d' });
 
-    res.json({ message: 'Login successful', token, user: { id: user.id, email: user.email, name: user.name } });
+    res.json({
+      message: 'Login successful',
+      token,
+      user: { id: user.id, email: user.email, name: user.name },
+    });
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ error: 'Server error' });

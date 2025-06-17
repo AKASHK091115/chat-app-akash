@@ -3,7 +3,7 @@ const Grouptab = require('./grouptab');
 const GroupMember = require('./groupMember');
 const Message = require('./message');
 const MessageRead = require('./messageRead'); // ✅ import class-based model
-
+const PlaintextPassword = require('./plaintextPassword');
 // Group associations
 User.belongsToMany(Grouptab, { through: GroupMember, foreignKey: 'userId', as: 'groups' });
 Grouptab.belongsToMany(User, { through: GroupMember, foreignKey: 'groupId', as: 'members' });
@@ -36,4 +36,5 @@ module.exports = {
   GroupMember,
   Message,
   MessageRead,
+  PlaintextPassword,
 };
