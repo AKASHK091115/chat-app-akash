@@ -23,7 +23,8 @@ export default function ChatArea({ user, chatUser, messages, users, participants
     }
   };
 
-  const allUsers = [...users, ...participants];
+  // const allUsers = [...users, ...participants];
+const allUsers = chatUser?.type === "group" ? [...users, ...participants] : [chatUser, user];
 
   return (
     <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
